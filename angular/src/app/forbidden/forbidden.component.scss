@@ -1,0 +1,20 @@
+@use "sass:map";
+@import "../../config";
+@import "node_modules/@dnastack/base-theme/scss/mixins";
+
+.page-body {
+  text-align: center;
+  padding: map.get($gapSizes, "medium-large");
+
+  h2 {
+    @include set-font($bodyFontFamily, "h2", 700);
+    line-height: 140%;
+  }
+
+  p {
+    @include set-font($bodyFontFamily, "body", 500);
+  }
+
+}
+
+

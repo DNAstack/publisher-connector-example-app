@@ -1,0 +1,111 @@
+<div class="container">
+  <div class="content">
+    <div class="left-panel panel">
+      <div>
+        <h4>{{editDataSource ? 'Edit Data Source' : 'New Data Source'}}</h4>
+        <a>How do I connect to a data source?</a>
+      </div>
+      <div class="data-source-info">
+        <div class="info-title">Type</div>
+        <div class="info-text">Example Connector</div>
+      </div>
+    </div>
+    <div class="right-panel panel">
+      <form [formGroup]="form" novalidate="novalidate">
+        <h4>Data Source Configuration</h4>
+        <ng-container *ngIf="step == 1">
+          <div class="form-control-wrapper" formGroupName="configuration">
+            <label class="required">Username</label>
+            <input id="username"
+                   class="username"
+                   formControlName="username"
+                   [ngClass]="{'error': stepOneInvalid && form.get('configuration.username').hasError('required')}"/>
+            <p *ngIf="stepOneInvalid && form.get('configuration.username').hasError('required')"
+               class="message invalid">
+              <svg class="feather-icon">
+                <use xlink:href="/assets/icons/feather-sprite.svg#alert-circle"/>
+              </svg>
+              <span>Username is required</span>
+            </p>
+          </div>
+          <div class="form-control-wrapper" formGroupName="configuration">
+            <label class="required">Password</label>
+            <input id="password"
+                   class="password"
+                   formControlName="password"
+                   type="password"
+                   [ngClass]="{'error': stepOneInvalid && form.get('configuration.password').hasError('required')}"/>
+            <p *ngIf="stepOneInvalid && form.get('configuration.password').hasError('required')"
+               class="message invalid">
+              <svg class="feather-icon">
+                <use xlink:href="/assets/icons/feather-sprite.svg#alert-circle"/>
+              </svg>
+              <span>Password is required</span>
+            </p>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="step == 2">
+          <div class="form-control-wrapper">
+            <label for="name">Name</label>
+            <input id="name"
+                   class="datasource-name"
+                   formControlName="name"
+                   [ngClass]="{'error': stepTwoInvalid && form.get('name').hasError('required')}"/>
+            <p *ngIf="stepTwoInvalid && form.get('name').hasError('required')" class="message invalid">
+              <svg class="feather-icon">
+                <use xlink:href="/assets/icons/feather-sprite.svg#alert-circle"/>
+              </svg>
+              <span>Name is required</span>
+            </p>
+          </div>
+          <p *ngIf="showConnectionCreateError" class="message invalid">
+            <svg class="feather-icon">
+              <use xlink:href="/assets/icons/feather-sprite.svg#alert-circle"/>
+            </svg>
+            <span>{{errorMessage || 'Something went wrong.Please try again.'}}</span>
+          </p>
+          <div class="share-collection" *ngIf="!editDataSource">
+            <p>A smart collection has been created based on your selection.</p>
+            <div class="share-collection-toggle">
+              <div class="info-title">Create and share collection</div>
+              <mat-slide-toggle id="share-data-source-toggle"
+                                [color]="'accent'"
+                                [checked]="shareCollection"
+                                [disableRipple]="true"
+                                (toggleChange)="shareCollection = !shareCollection">{{ shareCollection ? "On" : "Off" }}
+              </mat-slide-toggle>
+            </div>
+            <div class="share-collection-description"
+                 *ngIf="collectionDescription">
+              {{ collectionDescription }}
+            </div>
+          </div>
+        </ng-container>
+      </form>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer--left">
+      <button class="text-button back-button" (click)="back()" *ngIf="showBackButton()">
+        <svg class="feather-icon">
+          <use xlink:href="/assets/icons/feather-sprite.svg#arrow-left"/>
+        </svg>
+        <span>Back</span>
+      </button>
+    </div>
+    <div class="footer-right">
+      <button class="text-button cancel-button" (click)="closeIframe()">Cancel</button>
+      <button class="solid-button"
+              [ngClass]="(step === 2) ? 'done-button' : 'next-button'"
+              [disabled]="(step === 1 && validatingConfiguration)"
+              (click)="next()">
+        <mat-icon *ngIf="validatingConfiguration">
+          <mat-spinner color="accent" diameter="18">
+          </mat-spinner>
+        </mat-icon>
+        {{ (step === 1 && !validatingConfiguration) ? 'Next' : (step === 2) ? 'Done' : '' }}
+      </button>
+    </div>
+  </div>
+</div>

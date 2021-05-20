@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.3.1.RELEASE</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+  <groupId>com.dnastack.dlcon.exampleconnector</groupId>
+  <artifactId>example-connector</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <description>Connector Example</description>
+
+  <repositories>
+    <repository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/milestone</url>
+    </repository>
+    <repository>
+      <id>github</id>
+      <name>GitHub OWNER Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/DNAstack/dnastack-packages</url>
+    </repository>
+    <repository>
+      <id>dnastack-releases</id>
+      <name>NexusDnastackReleases</name>
+      <url>https://nexus.dnastack.com/content/repositories/releases/</url>
+    </repository>
+  </repositories>
+
+  <properties>
+    <!-- DO NOT RENAME THIS BECAUSE THE BUILD SCRIPT FOR THE PREDEPLOY JOB DEPENDS ON THIS PROPERTY. -->
+    <dlcon-base.version>0.1-63-gf399540</dlcon-base.version>
+<!--    <dlcon-base.version>0.1-SNAPSHOT</dlcon-base.version>-->
+
+    <java.version>11</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <azurestorage.version>12.9.0</azurestorage.version>
+    <node.version>v12.19.0</node.version>
+    <npm.version>6.14.8</npm.version>
+    <angular.project.location>angular</angular.project.location>
+    <angular.project.nodeInstallation.location>node_installation</angular.project.nodeInstallation.location>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.dnastack</groupId>
+      <artifactId>java-dlcon-base-connection-spring-starter</artifactId>
+      <version>${dlcon-base.version}</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>1.10.3</version>
+          <configuration>
+            <workingDirectory>${angular.project.location}</workingDirectory>
+            <installDirectory>${angular.project.nodeInstallation.location}</installDirectory>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>de.qaware.maven</groupId>
+        <artifactId>go-offline-maven-plugin</artifactId>
+        <version>1.2.5</version>
+        <configuration>
+          <dynamicDependencies>
+            <DynamicDependency>
+              <groupId>org.apache.maven.surefire</groupId>
+              <artifactId>surefire-junit-platform</artifactId>
+              <version>2.22.2</version>
+              <repositoryType>PLUGIN</repositoryType>
+            </DynamicDependency>
+          </dynamicDependencies>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>install-npm-and-node</id>
+      <activation>
+        <file>
+          <missing>${angular.project.nodeInstallation.location}</missing>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <!-- It will install nodejs and npm -->
+              <execution>
+                <id>install</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>${node.version}</nodeVersion>
+                  <npmVersion>${npm.version}</npmVersion>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>resolve-dependencies</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <!-- It will execute command "npm install" inside "/angular" directory -->
+              <execution>
+                <id>dependencies</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>install --unsafe-perm</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>full-build</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <!-- It will execute command "npm run build:prod" inside "/angular" directory
+                  to clean and create "/dist" directory -->
+              <execution>
+                <id>build</id>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <arguments>run build:prod</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>${java.version}</source>
+              <target>${java.version}</target>
+            </configuration>
+          </plugin>
+
+          <!-- Plugin to copy the content of /angular/dist/ directory to output
+              directory -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.1.0</version>
+            <executions>
+              <execution>
+                <id>default-copy-resources</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <overwrite>true</overwrite>
+                  <!-- This folder is the folder where your angular files
+                  will be copied to so that they end up in the fat jar. -->
+                  <outputDirectory>${project.build.directory}/classes/static/</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>
+                        ${project.basedir}/${angular.project.location}/dist/dlcon-az-storage/
+                      </directory>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+              <execution>
+                <id>copy-spring-boot-only</id>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <overwrite>true</overwrite>
+                  <!-- This folder is the folder where your angular files
+                  will be copied to so that they end up in the fat jar. -->
+                  <outputDirectory>${project.build.directory}/classes/static/</outputDirectory>
+                  <resources>
+                    <resource>
+                      <directory>${project.basedir}/src/main/resources/static</directory>
+                    </resource>
+                  </resources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+
+</project>

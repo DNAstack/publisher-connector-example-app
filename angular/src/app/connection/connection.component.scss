@@ -1,0 +1,295 @@
+@use "sass:map";
+@import "../../config";
+@import "node_modules/@dnastack/base-theme/scss/mixins.scss";
+
+// got some of the styles from data lake data-source-dialog for consistency
+$modal-footer-height: 15%;
+
+.text-button {
+  @include uikit-button(accentText);
+}
+
+.solid-button {
+  border-radius: 1px;
+  width: 110px;
+}
+
+.next-button {
+  @include uikit-button(light, small, false);
+}
+
+.done-button {
+  @include uikit-button(light, small, false);
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .content {
+    display: flex;
+    height: calc(100% - #{$modal-footer-height});
+    width: 100%;
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+    padding: 34px 24px;
+  }
+
+  .left-panel {
+    width: 40%;
+    border-right: 1px solid map.get($grayScalePalette, 3);
+    justify-content: space-between;
+
+    h4 {
+      @include set-font($bodyFontFamily, "h4", 600);
+    }
+
+    a {
+      font-size: map.get($fontSizes, 'body-smaller');
+      color: map.get($grayScalePalette, 7);
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .data-source-info {
+      background-color: map.get($grayScalePalette, 2);
+      padding: 15px;
+
+      .spacer {
+        height: 16px;
+      }
+
+      .info-title {
+        @include set-font($bodyFontFamily, "body-small", 600);
+        color: map.get($grayScalePalette, 11);
+      }
+
+      .info-text {
+        @include set-font($bodyFontFamily, "body-small", 400);
+        color: map.get($grayScalePalette, 7);
+      }
+    }
+  }
+
+  .right-panel {
+    width: 60%;
+    overflow: auto;
+    h4 {
+      @include set-font($bodyFontFamily, "body", 600);
+    }
+
+    .description-text {
+      font-size: map.get($fontSizes, 'body-small');
+      color: map.get($grayScalePalette, 6);
+      margin-bottom: 24px;
+    }
+
+    label {
+      @include set-font($bodyFontFamily, "body-small", 600);
+      color: map.get($grayScalePalette, 7);
+      margin-bottom: 6px;
+    }
+
+    .form-control-wrapper {
+      margin-bottom: map.get($gapSizes, 'normal');
+
+      input {
+        width: calc(100% - 34px);
+        padding: 14px 16px;
+        border: 1px solid map.get($grayScalePalette, 11);
+        border-radius: 1px;
+
+        &.error {
+          border-color: map.get($codePalette, 'error');
+        }
+
+        &.success {
+          border-color: map.get($codePalette, 'success');
+        }
+      }
+
+      mat-select {
+        padding: 14px map.get($gapSizes, 'normal');
+        border: 1px solid map.get($grayScalePalette, 11);
+        width: calc(100% - 34px);
+        border-radius: 1px;
+        font-size: map.get($fontSizes, 'body-smaller');
+      }
+
+      .username, .password {
+        border: 1px solid map.get($grayScalePalette, 5);
+        border-radius: 4px;
+
+        &:focus {
+          outline: none;
+          border-color: map.get($grayScalePalette, 11);
+        }
+      }
+
+      .access-key:focus::placeholder {
+        color: transparent;
+      }
+
+      mat-slide-toggle {
+        margin-left: map.get($gapSizes, 'large');
+      }
+    }
+
+    .message {
+      font-size: map.get($fontSizes, 'body-smaller');
+
+      svg {
+        height: 16px;
+        width: 16px;
+        vertical-align: middle;
+      }
+
+      span {
+        margin-left: map.get($gapSizes, 'small');
+      }
+
+      &.valid {
+        color: map.get($codePalette, 'success');
+      }
+
+      &.invalid {
+        color: map.get($codePalette, 'error');
+      }
+    }
+
+    .edit-warning {
+      background: #ffbb33;
+      font-size: map.get($fontSizes, 'body-small');
+      border-radius: 4px;
+      padding: map.get($gapSizes, 'small');
+      margin-bottom: map.get($gapSizes, 'normal');
+      display: flex;
+      align-items: center;
+
+      svg {
+        flex-basis: 30%;
+      }
+
+      span {
+        margin-left: map.get($gapSizes, 'small');
+      }
+    }
+
+    .instructions-wrapper {
+      background: #F4F6FA;
+      margin-bottom: 16px;
+      border: 1px dashed #d3dce6;
+      border-radius: 4px;
+
+      p {
+        @include set-font($bodyFontFamily, "body-small", 600);
+        padding: map.get($gapSizes, 'normal') 0 0 map.get($gapSizes, 'normal');
+      }
+
+      ol {
+        padding-inline-start: map.get($gapSizes, 'medium');
+        padding-right: map.get($gapSizes, 'normal');
+      }
+
+      li {
+        color: map.get($grayScalePalette, 7);
+        font-size: map.get($fontSizes, 'body-smaller');
+      }
+    }
+
+    .share-collection {
+      border-top: 1px solid map.get($grayScalePalette, 3);
+      margin-top: 10px;
+      padding-top: map.get($gapSizes, 'normal');
+
+      p {
+        @include set-font($bodyFontFamily, "body-smaller", 400);
+        color: map.get($grayScalePalette, 6);
+        margin-bottom: map.get($gapSizes, 'medium');
+      }
+
+      .share-collection-toggle {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: map.get($gapSizes, 'small');
+      }
+
+      .share-collection-description {
+        @include set-font($bodyFontFamily, "body-small", 500);
+        color: map.get($grayScalePalette, 7);
+      }
+    }
+  }
+
+  .footer {
+    height: $modal-footer-height;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0;
+    border-top: 1px solid map.get($grayScalePalette, 3);
+
+    .footer--left {
+      margin-left: map.get($gapSizes, "normal");
+    }
+
+    .footer-right {
+      margin-right: map.get($gapSizes, "normal");
+    }
+
+    .cancel-button {
+      margin-right: map.get($gapSizes, "medium");
+    }
+
+    .back-button {
+      svg {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+        vertical-align: middle;
+      }
+
+      span {
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .mat-form-field {
+    width: 100%;
+  }
+
+  .mat-icon {
+    height: 15px;
+    width: 15px;
+
+    .mat-spinner {
+      width: 18px;
+      height: 18px;
+    }
+  }
+  input:-webkit-autofill {
+    background-color: transparent !important;
+    -webkit-box-shadow: 0 0 0 50px white inset;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+}

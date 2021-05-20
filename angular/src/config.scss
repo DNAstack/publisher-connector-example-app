@@ -1,0 +1,189 @@
+/**
+ * SCSS Configuration (Variables)
+ *
+ * This is the basic/default configuration configuration. You may need to override a few of them per application.
+ */
+@use "sass:map";
+
+$grayScalePalette: (
+        1: #fbfbfc,
+        2: #f9f9fa,
+        3: #e9ebef,
+        4: #e1e5ee,
+        5: #c8cedb,
+        6: #969dac,
+        7: #6b7483,
+        8: #525965,
+        9: #3a3f48, // B/W 900
+        10: #1F2D3D,
+        11: #1e1f21,
+);
+
+$themeDefaultAccentColor: #0089f6 !default;
+$themeHoverAccentColor: #1095FF !default;
+$themeActiveAccentColor: #0c74d4 !default;
+
+// Palette for the base theme
+$themePalette: (
+        "primary": #fff,
+        "secondary": map.get($grayScalePalette, 11),
+        "accent": $themeDefaultAccentColor,
+) !default;
+
+// Font colors when a color in $themePalette is a background color of the text.
+$fontColorThemePalette: (
+        "primary": #000,
+        "secondary": #fff,
+        "accent": #fff,
+) !default;
+
+$baseFontFamily: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+$headerFontFamily: 'Lato', $baseFontFamily;
+$bodyFontFamily: 'Proxima Nova', 'Open Sans', $baseFontFamily;
+
+$fontSizes: (
+        "h1": 40px,
+        "h2": 32px,
+        "h3": 24px,
+        "h4": 20px,
+        "h5": 17px,
+        "body": 16px,
+        "body-small": 14px,
+        "body-smaller": 12px,
+        "caption": 14px,
+        "tiny": 12px
+);
+
+$gapSizes: (
+        "small": 8px,
+        "semi-small": 12px,
+        "normal": 16px,
+        "medium": 24px,
+        "large": 32px,
+        "medium-large": 48px,
+        "extra-large": 64px,
+);
+
+$linkColor: #0089F6;
+
+$codePalette: (
+        "success": #66c109,
+        "warning": #f6df10,
+        "error": #f64662
+);
+
+// This is a complement to $themePalette. Used mainly as the background colour for buttons on hover.
+$themeHoverColorPalette: (
+        "primary": map.get($grayScalePalette, 1),
+        "secondary": map.get($grayScalePalette, 9),
+        "accent": $themeHoverAccentColor,
+) !default;
+
+$pageHeaderHeight: 140px;
+$pageFooterHeight: 140px;
+
+// Palette for primary color #ffffff
+// 500 is the default value
+$primaryPalette: (
+        50 : #ffffff,
+        100 : #ffffff,
+        200 : #ffffff,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #ffffff,
+        A200 : #ffffff,
+        A400 : #ffffff,
+        A700 : #ffffff,
+        contrast: (
+                50 : #000000,
+                100 : #000000,
+                200 : #000000,
+                300 : #000000,
+                400 : #000000,
+                500 : #000000,
+                600 : #000000,
+                700 : #000000,
+                800 : #000000,
+                900 : #000000,
+                A100 : #000000,
+                A200 : #000000,
+                A400 : #000000,
+                A700 : #000000,
+        )
+) !default;
+
+// Palette for secondary color #1e1f21
+// 500 is the default value
+$secondaryPalette: (
+        50 : #e4e4e4,
+        100 : #bcbcbc,
+        200 : #8f8f90,
+        300 : #626264,
+        400 : #404142,
+        500 : #1e1f21,
+        600 : #1a1b1d,
+        700 : #161718,
+        800 : #121214,
+        900 : #0a0a0b,
+        A100 : #5252ff,
+        A200 : #1f1fff,
+        A400 : #0000eb,
+        A700 : #0000d2,
+        contrast: (
+                50 : #000000,
+                100 : #000000,
+                200 : #000000,
+                300 : #ffffff,
+                400 : #ffffff,
+                500 : #ffffff,
+                600 : #ffffff,
+                700 : #ffffff,
+                800 : #ffffff,
+                900 : #ffffff,
+                A100 : #ffffff,
+                A200 : #ffffff,
+                A400 : #ffffff,
+                A700 : #ffffff,
+        )
+) !default;
+
+// Palette for accent color #1e1f21
+// 500 is the default value
+$accentPalette: (
+        50 : #e0f1fe,
+        100 : #b3dcfc,
+        200 : #80c4fb,
+        300 : #4dacf9,
+        400 : #269bf7,
+        500 : #0089f6,
+        600 : #0081f5,
+        700 : #0076f3,
+        800 : #006cf2,
+        900 : #0059ef,
+        A100 : #ffffff,
+        A200 : #e3ecff,
+        A400 : #b0c8ff,
+        A700 : #96b7ff,
+        contrast: (
+                50 : #000000,
+                100 : #000000,
+                200 : #000000,
+                300 : #000000,
+                400 : #000000,
+                500 : #ffffff,
+                600 : #ffffff,
+                700 : #ffffff,
+                800 : #ffffff,
+                900 : #ffffff,
+                A100 : #000000,
+                A200 : #000000,
+                A400 : #000000,
+                A700 : #000000,
+        )
+) !default;
+

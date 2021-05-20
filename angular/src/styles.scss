@@ -1,0 +1,55 @@
+/* You can add global styles to this file, and also import other style files */
+@use "sass:map";
+
+// Same fonts for all apps
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;600;700;800&display=swap');
+
+@import "config";
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$dlcon-frontend-primary: mat-palette($primaryPalette);
+$dlcon-frontend-accent: mat-palette($accentPalette);
+
+// The warn palette is optional (defaults to red).
+$dlcon-frontend-warn: mat-palette($mat-red);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$dlcon-frontend-theme: mat-light-theme((
+  color: (
+    primary: $dlcon-frontend-primary,
+    accent: $dlcon-frontend-accent,
+    warn: $dlcon-frontend-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($dlcon-frontend-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+@import "node_modules/@dnastack/base-theme/scss/base";
+
+.mat-progress-bar-buffer {
+  background: map.get($codePalette, 5);
+}
+
+//To indicate required fields
+.required:after {
+  content: " *";
+  color: map.get($codePalette, 'error');
+}

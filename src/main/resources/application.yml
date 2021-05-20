@@ -1,0 +1,117 @@
+# NOTE: The usual Spring stuff
+spring:
+  application:
+    name: "example-connector" # <-- WARNING: This is very important as it may be used as an ID of the service.
+    description: "An example connector for Publisher"
+  datasource:
+    url: "jdbc:postgresql://localhost/exampleconnector"
+    username: "exampleconnector"
+    password: "exampleconnector"
+    driver-class-name: org.postgresql.Driver
+  # For sending samples to the server
+  zipkin:
+    enabled: false # By default, it is DISABLED for the local development.
+    base-url: http://localhost:9411
+    sender:
+      type: web
+  # NOTE: The dlcon-base library overrides the default Liquibase setup where the DB connection info is referred to
+  #       "spring.datasource", and only "spring.liquibase.change-log" and "spring.liquibase.enabled" are recognized    
+  liquibase:
+    # NOTE: "enabled" alone will enable the base DB migration. It is a prerequisite for both base and app DB migrations.
+    enabled: true
+    # NOTE: "change-log" will enable the app-specific DB migraiton. Please note that unlike the usual Spring's
+    #       Liquibase integration, "classpath:" is not automatically applied. 
+    #change-log: classpath:db/changelog/db.changelog-master.yaml
+
+build.version: "@project.version@"
+
+# NOTE: The usual Spring stuff
+server:
+  port: 9110
+  error:
+    include-message: always         #To include "message" attribute
+    include-binding-errors: always  #To include "errors" attribute
+
+# NOTE: This is required to reduce log messages.
+logging:
+  level:
+    org.springframework.security: INFO # set to DEBUG to find out why tokens are rejected
+    # Reduced the log messages produced by p6spy by default.
+    p6spy: WARN
+
+# The configuration for the dlcon-base library
+# NOTE: This is intended to be the configuration for the library. If you app has specific need, please use "app.*". 
+dlcon:
+  base:
+    name: ${spring.application.name}
+    base-uri: http://localhost:${server.port}
+    # Sample Auth configuration - works with local Wallet
+    auth:
+      token-issuers:
+        - issuer-uri: http://localhost:8081
+          jwk-set-uri: http://localhost:8081/oauth/jwks
+          audiences: http://dlcon.local
+    connection-types:
+      - id: exampleconnector
+        icon: https://storage.googleapis.com/publisher-public-assets/icons/publisher-logo-white.svg
+    frontend:
+      datalake-urls: http://localhost:8000
+      app-name: "Publisher"
+    pubsub:
+      url: http://localhost:9095
+      oauth-client:
+        audience: ${dlcon.base.pubsub.url}
+        scope: write:topic
+    security:
+      cryptography:
+        keys:
+          jdbi: LaS9DFjT04jDhJiUmhI6NigfZaS+Hba49sl/AMwkpEE=
+    system-info:
+      publisher-info:
+        name: Publisher
+        url: http://localhost:8000
+  change-feed:
+    publishing-topic: "data-source-change"
+    monitoring-delay: 30000
+  service-info:
+    id: "exampleconnector"
+    name: ${spring.application.description}
+    description: ${spring.application.description}
+    documentation-url: /docs/swagger-ui.html
+    contact-url: mailto:support@dnastack.com
+    version: @project.version@
+
+# The configuration for the OAuth Client Factory library
+oauth-client-factory:
+  default-config:
+    token-uri: ${dlcon.base.auth.token-issuers[0].issuer-uri}/oauth/token
+    client-id: "exampleconnector"
+    client-secret: "dev-secret-never-use-in-prod"
+
+# The configuration for the auditing logger library
+auditing:
+  service-client-id: ${oauth-client-factory.default-config.client-id}
+  publisher:
+    events-uri: ${auditing.oauth-client.audience}/events
+    retry-after: 5
+    give-up-after: 5
+  oauth-client:
+    client-id: ${oauth-client-factory.default-config.client-id}
+    client-secret: ${oauth-client-factory.default-config.client-secret}
+    scopes: audit:create
+    audience: http://localhost:8888
+    resource: ${auditing.publisher.events-uri}
+    actions: [ "audit:create" ]
+    token-uri: ${dlcon.base.auth.token-issuers[0].issuer-uri}/oauth/token
+    token-issuers-uris: [ "${dlcon.base.auth.token-issuers[0].issuer-uri}" ]
+  json-printer-style: dense_print
+
+# The configuration for the documentation library
+springdoc:
+  oAuthFlow:
+    authorizationUrl: http://localhost:8081/oauth/authorize
+    tokenUrl: http://localhost:8081/oauth/token
+  api-docs:
+    path: /docs/openapi.json
+  swagger-ui:
+    path: /docs/swagger-ui.html
