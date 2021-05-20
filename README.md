@@ -1,6 +1,6 @@
-# Data Lake Connector Azure Blob Storage
+# Publisher Example Connector
 
-This repository contains the internal service interface implementation for CRUD operations on Azure Blob Storage.
+This repository contains the basic files for a Publisher connector.
 
 # Quickstart
 
