@@ -12,6 +12,6 @@ export class ConnectionService {
   }
 
   getConfig() {
-    return this.httpClient.get(`/config`)
+    return this.httpClient.get(`config`)
   }
 }
