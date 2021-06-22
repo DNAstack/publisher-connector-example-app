@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8">
   <title>Azure Data source</title>
-  <base href="/">
+  <!--Following script is required to set the "base href" dynamically so that the connector UI can be loaded via Publisher API Relay Service.-->
+   <script>
+    let pathName = document.location.pathname.split('/');
+    document.write(`<base href='/${pathName[1]}/${pathName[2]}/'>`);
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
