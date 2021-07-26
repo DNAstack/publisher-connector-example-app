@@ -1,15 +1,9 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ConnectionService } from "./connection.service";
-import { DataSource } from "./datasource.model";
+import { DataSource, PatchObject } from "./datasource.model";
 import { ActivatedRoute, Router } from "@angular/router";
 import _isEqual from 'lodash.isequal';
-
-export interface PatchObject {
-    path: string,
-    op: string,
-    value: string
-}
 
 @Component({
     selector: 'app-connection',
@@ -32,7 +26,6 @@ export class ConnectionComponent implements OnInit {
     step: number = 1;
     shareCollection: boolean = true;
     collectionDescription: string = '';
-    showValidateLoader: boolean;
     datalakeUrls: string[];
     showConnectionCreateError: boolean = false;
     targetOrigin: string;
@@ -41,9 +34,9 @@ export class ConnectionComponent implements OnInit {
     stepTwoInvalid: boolean = false;
     errorMessage: string;
     validatingConfiguration: boolean = false;
-    validationCompleted: boolean = true;
     appName: string;
     initialValuesForDataSourceForm: FormGroup;
+    private stepThreeInvalid: boolean;
 
     constructor(private formBuilder: FormBuilder,
                 private connectionService: ConnectionService,
@@ -110,16 +103,17 @@ export class ConnectionComponent implements OnInit {
     @HostListener('window:message', ['$event'])
     parentEvent($event: MessageEvent) {
         const {data} = $event;
-        if (data && data['id']) {
-            this.datasource = data;
-            this.datasource.type = this.CONNECTION_TYPE;
-            this.editDataSource = true;
-            this.buildForm();
-            this.initialValuesForDataSourceForm = this.form.getRawValue();
-        }
-        if (data && data['errorMessage']) {
-            this.showConnectionCreateError = true;
-            this.errorMessage = data['errorMessage'];
+        if (data['id']) {
+            // Using the id sent by the parent frame, get the connection details and patch the form.
+            this.connectionService.getConnection(data['id']).subscribe(connection => {
+                this.datasource = connection.body;
+                this.datasource.eTag = connection.headers.get('eTag');
+                this.datasource.type = this.CONNECTION_TYPE;
+
+                this.editDataSource = true;
+                this.buildForm();
+                this.initialValuesForDataSourceForm = this.form.getRawValue();
+            })
         }
     }
 
@@ -132,27 +126,36 @@ export class ConnectionComponent implements OnInit {
         this.stepThreeInvalid = false;
         const dataSourceData = {type: this.datasource.type, ...this.form.value}
         if (this.editDataSource) {
-            this.datasource.configuration.accessKey = null;
-            window.parent.postMessage({
-                    'close': false,
-                    'back': false,
-                    'done': true,
-                    'patchData': this.getPatchData(this.datasource),
-                    'dataSourceId': this.datasource.id,
-                    'edit': this.editDataSource,
-                    'create-collection': false
+            this.connectionService.updateConnection(this.datasource.id, this.getPatchData(this.datasource), this.datasource.eTag).subscribe(response => {
+                    window.parent.postMessage({
+                            'close': false,
+                            'back': false,
+                            'done': true,
+                            'edit-connector-success': true,
+                            'create-collection': false
+                        },
+                        this.targetOrigin);
                 },
-                this.targetOrigin);
+                error => {
+                    this.showConnectionCreateError = true;
+                    this.errorMessage = error.error.message;
+                });
         } else {
-            window.parent.postMessage({
-                    'close': false,
-                    'back': false,
-                    'done': true,
-                    'datasource': dataSourceData,
-                    'edit': this.editDataSource,
-                    'create-collection': this.shareCollection
+            this.connectionService.createConnection(dataSourceData).subscribe(response => {
+                    window.parent.postMessage({
+                            'close': false,
+                            'back': false,
+                            'done': true,
+                            'datasource': response,
+                            'create-connector-success': true,
+                            'create-collection': this.shareCollection
+                        },
+                        this.targetOrigin);
                 },
-                this.targetOrigin);
+                error => {
+                    this.showConnectionCreateError = true;
+                    this.errorMessage = error.error.message;
+                });
         }
     }
 
