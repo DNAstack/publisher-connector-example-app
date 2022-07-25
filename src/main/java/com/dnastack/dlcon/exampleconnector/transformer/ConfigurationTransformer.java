@@ -1,6 +1,6 @@
 package com.dnastack.dlcon.exampleconnector.transformer;
 
-import com.dnastack.dlcon.postgresql.model.DataSourceConfiguration;
+import com.dnastack.dlcon.exampleconnector.model.DataSourceConfiguration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
