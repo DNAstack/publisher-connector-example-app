@@ -1,5 +1,5 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, Validators } from "@angular/forms";
 import { ConnectionService } from "./connection.service";
 import { DataSource, PatchObject } from "./datasource.model";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -22,7 +22,7 @@ export class ConnectionComponent implements OnInit {
         },
         type: this.CONNECTION_TYPE
     };
-    form: FormGroup;
+    form: UntypedFormGroup;
     step: number = 1;
     shareCollection: boolean = true;
     collectionDescription: string = '';
@@ -35,10 +35,10 @@ export class ConnectionComponent implements OnInit {
     errorMessage: string;
     validatingConfiguration: boolean = false;
     appName: string;
-    initialValuesForDataSourceForm: FormGroup;
+    initialValuesForDataSourceForm: UntypedFormGroup;
     private stepThreeInvalid: boolean;
 
-    constructor(private formBuilder: FormBuilder,
+    constructor(private formBuilder: UntypedFormBuilder,
                 private connectionService: ConnectionService,
                 private activatedRoute: ActivatedRoute,
                 private router: Router) {
