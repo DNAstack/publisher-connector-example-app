@@ -32,6 +32,8 @@ server:
     include-message: always         #To include "message" attribute
     include-binding-errors: always  #To include "errors" attribute
 
+app:
+  url: http://localhost:${server.port}
 # NOTE: This is required to reduce log messages.
 logging:
   level:
