@@ -31,7 +31,7 @@
 
   <properties>
     <!-- DO NOT RENAME THIS BECAUSE THE BUILD SCRIPT FOR THE PREDEPLOY JOB DEPENDS ON THIS PROPERTY. -->
-    <dlcon-base.version>0.1-258-ga6b329a</dlcon-base.version>
+    <dlcon-base.version>0.1-260-gb2fdc09</dlcon-base.version>
 <!--    <dlcon-base.version>0.1-SNAPSHOT</dlcon-base.version>-->
 
     <java.version>17</java.version>
